@@ -1,4 +1,4 @@
-package com.example.wearablesandroidtask.ui.main
+package com.example.wearablesandroidtask.ui.scan
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -8,17 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.wearablesandroidtask.R
 
-class MainFragment : Fragment() {
+class ScanFragment : Fragment() {
 
     companion object {
-        fun newInstance() = MainFragment()
+        fun newInstance() = ScanFragment()
     }
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: ScanViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(ScanViewModel::class.java)
         // TODO: Use the ViewModel
     }
 
@@ -26,7 +26,7 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_main, container, false)
+        return inflater.inflate(R.layout.fragment_scan, container, false)
     }
 
 }
