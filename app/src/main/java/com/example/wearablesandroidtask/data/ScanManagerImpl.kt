@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothManager
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Context
+import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +33,7 @@ class ScanManagerImpl @Inject constructor(@ApplicationContext context: Context, 
     private val leScanCallback: ScanCallback = object : ScanCallback() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             super.onScanResult(callbackType, result)
+            Log.d("ScanManager", "Found: ${result.device}")
             coroutineScope.launch(Dispatchers.Default) {
                 _devicesFlow.emit(result.device)
             }
@@ -51,6 +53,5 @@ class ScanManagerImpl @Inject constructor(@ApplicationContext context: Context, 
     override fun stopScan() {
         bluetoothLeScanner.stopScan(leScanCallback)
     }
-
 
 }

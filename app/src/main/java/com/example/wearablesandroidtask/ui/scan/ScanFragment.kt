@@ -1,23 +1,24 @@
 package com.example.wearablesandroidtask.ui.scan
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.Lifecycle
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.wearablesandroidtask.R
 import com.example.wearablesandroidtask.databinding.FragmentScanBinding
+import com.example.wearablesandroidtask.ui.adapters.DevicesAdapter
+import com.example.wearablesandroidtask.ui.adapters.FoundDevicesAdapter
 import com.example.wearablesandroidtask.utils.launchAndRepeatWithViewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+
 @AndroidEntryPoint
 class ScanFragment : Fragment(R.layout.fragment_scan) {
 
@@ -28,6 +29,8 @@ class ScanFragment : Fragment(R.layout.fragment_scan) {
     private val viewBinding: FragmentScanBinding by viewBinding(FragmentScanBinding::bind)
 
     private lateinit var viewModel: ScanViewModel
+
+    private val devicesAdapter = FoundDevicesAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,12 +44,6 @@ class ScanFragment : Fragment(R.layout.fragment_scan) {
         setupViewModelListeners()
     }
 
-    override fun onResume() {
-        super.onResume()
-        val isBTEnabled = viewModel.checkBTEnabled()
-
-    }
-
     private fun setupViews() {
         with(viewBinding) {
             buttonStart.setOnClickListener {
@@ -56,6 +53,10 @@ class ScanFragment : Fragment(R.layout.fragment_scan) {
                     Toast.makeText(activity, getString(R.string.title_please_enable_bt), Toast.LENGTH_LONG).show()
                 }
             }
+
+            recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            recyclerView.itemAnimator = DefaultItemAnimator()
+            recyclerView.adapter = devicesAdapter
         }
     }
 
@@ -63,7 +64,7 @@ class ScanFragment : Fragment(R.layout.fragment_scan) {
 
         launchAndRepeatWithViewLifecycle {
             viewModel.searchingStateFlow.collectLatest {
-                when(it) {
+                when (it) {
                     false -> {
                         with(viewBinding) {
                             buttonStart.text = getString(R.string.button_start)
@@ -80,7 +81,16 @@ class ScanFragment : Fragment(R.layout.fragment_scan) {
             }
         }
 
+        launchAndRepeatWithViewLifecycle {
+            viewModel.devicesListFlow.collectLatest {
+                devicesAdapter.submitList(it)
+            }
+        }
 
+     /*   viewModel.devicesListFlow
+            .onEach { devicesAdapter.submitList(it) }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+*/
     }
 
 }
