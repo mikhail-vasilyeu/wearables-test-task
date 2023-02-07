@@ -5,11 +5,13 @@ import kotlinx.coroutines.flow.Flow
 
 interface ScanManager {
 
+    val devicesFlow: Flow<BluetoothDevice>
+
     fun checkBTAvailable(): Boolean
 
     fun startScan()
 
     fun stopScan()
 
-    val devicesFlow: Flow<BluetoothDevice>
+    fun printDeviceData(deviceMac: String)
 }

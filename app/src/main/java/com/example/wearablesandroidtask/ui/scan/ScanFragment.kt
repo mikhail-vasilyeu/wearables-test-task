@@ -14,6 +14,7 @@ import com.example.wearablesandroidtask.ui.adapters.FoundDevicesAdapter
 import com.example.wearablesandroidtask.utils.launchAndRepeatWithViewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ScanFragment : Fragment(R.layout.fragment_scan) {
@@ -53,6 +54,12 @@ class ScanFragment : Fragment(R.layout.fragment_scan) {
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
             recyclerView.itemAnimator = DefaultItemAnimator()
             recyclerView.adapter = devicesAdapter
+
+            devicesAdapter.selectedListener = { deviceId ->
+                Timber.d("TAG", "DeviceId $deviceId clicked")
+                viewModel.printDeviceData(deviceId)
+                viewModel.stopSearch()
+            }
         }
     }
 
