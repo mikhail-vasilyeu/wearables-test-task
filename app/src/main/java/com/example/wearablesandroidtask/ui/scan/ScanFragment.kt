@@ -5,19 +5,15 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.wearablesandroidtask.R
 import com.example.wearablesandroidtask.databinding.FragmentScanBinding
-import com.example.wearablesandroidtask.ui.adapters.DevicesAdapter
 import com.example.wearablesandroidtask.ui.adapters.FoundDevicesAdapter
 import com.example.wearablesandroidtask.utils.launchAndRepeatWithViewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class ScanFragment : Fragment(R.layout.fragment_scan) {
@@ -69,12 +65,14 @@ class ScanFragment : Fragment(R.layout.fragment_scan) {
                         with(viewBinding) {
                             buttonStart.text = getString(R.string.button_start)
                             indicator.visibility = View.INVISIBLE
+                            tvInformation.text = getString(R.string.label_start_search)
                         }
                     }
                     true -> {
                         with(viewBinding) {
                             buttonStart.text = getString(R.string.button_stop)
                             indicator.visibility = View.VISIBLE
+                            tvInformation.text = getString(R.string.label_found_devices, "0")
                         }
                     }
                 }
@@ -84,13 +82,9 @@ class ScanFragment : Fragment(R.layout.fragment_scan) {
         launchAndRepeatWithViewLifecycle {
             viewModel.devicesListFlow.collectLatest {
                 devicesAdapter.submitList(it)
+                viewBinding.tvInformation.text = getString(R.string.label_found_devices, "${it.size}")
             }
         }
-
-     /*   viewModel.devicesListFlow
-            .onEach { devicesAdapter.submitList(it) }
-            .launchIn(viewLifecycleOwner.lifecycleScope)
-*/
     }
 
 }

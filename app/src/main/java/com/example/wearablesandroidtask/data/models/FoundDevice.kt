@@ -14,7 +14,7 @@ data class FoundDevice(val id: String) {
             override fun areContentsTheSame(oldItem: FoundDevice, newItem: FoundDevice): Boolean {
                 return areItemsTheSame(
                     oldItem, newItem
-                ) && oldItem.id == newItem.id
+                ) //&& oldItem.id == newItem.id  implement if more fields
             }
         }
     }

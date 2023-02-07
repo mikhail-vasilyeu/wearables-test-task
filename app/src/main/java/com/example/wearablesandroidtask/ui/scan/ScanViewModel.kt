@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.wearablesandroidtask.data.ScanManager
-import com.example.wearablesandroidtask.data.models.DeviceItem
 import com.example.wearablesandroidtask.data.models.FoundDevice
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
