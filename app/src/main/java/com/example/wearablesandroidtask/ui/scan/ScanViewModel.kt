@@ -11,6 +11,7 @@ class ScanViewModel : ViewModel() {
 
     private var searchStarted = false
 
+   // private val bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
 
     private val _searchingStateFlow = MutableStateFlow(false)
     val searchingStateFlow = _searchingStateFlow.asStateFlow()
