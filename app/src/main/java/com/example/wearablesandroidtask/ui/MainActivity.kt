@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.wearablesandroidtask.R
 import com.example.wearablesandroidtask.ui.scan.ScanFragment
+import dagger.hilt.android.AndroidEntryPoint
 
 /*
 
@@ -28,7 +29,7 @@ Repository
 https://github.com/mikhail-vasilyeu/wearables-test-task
 
 */
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     companion object {

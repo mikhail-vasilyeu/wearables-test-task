@@ -7,14 +7,16 @@ import android.bluetooth.BluetoothManager
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
-class ScanManagerImpl(private val context: Context, private val coroutineScope: CoroutineScope) : ScanManager {
+class ScanManagerImpl @Inject constructor(@ApplicationContext context: Context, private val coroutineScope: CoroutineScope) : ScanManager {
 
     private val bluetoothAdapter: BluetoothAdapter by lazy {
         val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager

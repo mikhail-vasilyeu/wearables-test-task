@@ -2,10 +2,12 @@ package com.example.wearablesandroidtask.ui.scan
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
@@ -13,9 +15,10 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.wearablesandroidtask.R
 import com.example.wearablesandroidtask.databinding.FragmentScanBinding
 import com.example.wearablesandroidtask.utils.launchAndRepeatWithViewLifecycle
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-
+@AndroidEntryPoint
 class ScanFragment : Fragment(R.layout.fragment_scan) {
 
     companion object {
@@ -38,10 +41,20 @@ class ScanFragment : Fragment(R.layout.fragment_scan) {
         setupViewModelListeners()
     }
 
+    override fun onResume() {
+        super.onResume()
+        val isBTEnabled = viewModel.checkBTEnabled()
+
+    }
+
     private fun setupViews() {
         with(viewBinding) {
             buttonStart.setOnClickListener {
-                viewModel.onStartClicked()
+                if (viewModel.checkBTEnabled()) {
+                    viewModel.onStartClicked()
+                } else {
+                    Toast.makeText(activity, getString(R.string.title_please_enable_bt), Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
