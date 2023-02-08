@@ -1,11 +1,7 @@
 package com.example.wearablesandroidtask.ui
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -13,11 +9,11 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.wearablesandroidtask.R
-import com.example.wearablesandroidtask.ui.scan.ScanFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 /*
@@ -37,16 +33,21 @@ class MainActivity : AppCompatActivity() {
         private const val MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION = 2
     }
 
+    private val viewModel: ScanViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, ScanFragment.newInstance())
-                .commitNow()
-        }
 
         checkLocationPermission()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!viewModel.checkBTEnabled()) {
+            Toast.makeText(this, getString(R.string.title_please_enable_bt), Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun checkLocationPermission() {

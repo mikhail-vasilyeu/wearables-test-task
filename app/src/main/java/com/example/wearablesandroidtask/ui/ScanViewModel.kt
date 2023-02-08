@@ -1,10 +1,11 @@
-package com.example.wearablesandroidtask.ui.scan
+package com.example.wearablesandroidtask.ui
 
 import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.wearablesandroidtask.data.ScanManager
 import com.example.wearablesandroidtask.data.models.FoundDevice
+import com.example.wearablesandroidtask.data.models.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -22,11 +23,17 @@ class ScanViewModel @Inject constructor(private val scanManager: ScanManager) : 
     private val _devicesListFlow = MutableSharedFlow<List<FoundDevice>>()
     val devicesListFlow = _devicesListFlow.asSharedFlow()
 
+    private val _deviceInfoFlow = MutableStateFlow<UiState>(UiState.Loading)
+    val deviceInfoFlow = _deviceInfoFlow.asStateFlow()
+
     private val found = hashMapOf<String, BluetoothDevice>()
 
     init {
         collectDevices()
+        collectDeviceInfo()
     }
+
+
 
     fun checkBTEnabled() = scanManager.checkBTAvailable()
 
@@ -40,7 +47,6 @@ class ScanViewModel @Inject constructor(private val scanManager: ScanManager) : 
         } else {
             scanManager.stopScan()
         }
-
     }
 
     fun stopSearch() {
@@ -51,16 +57,24 @@ class ScanViewModel @Inject constructor(private val scanManager: ScanManager) : 
 
     private fun collectDevices() {
         viewModelScope.launch {
-            scanManager.devicesFlow.collectLatest {
-                val result = found.put(it.address, it)
+            scanManager.devicesFlow.collectLatest {bluetoothDevice->
+                val result = found.put(bluetoothDevice.address, bluetoothDevice)
 
                 if (result == null) {
-                    Timber.d("TAG", "New bt device found: ${it.address}")
+                    Timber.d("New bt device found: ${bluetoothDevice.address}")
                     val devicesItemList = ArrayList(found.keys).map { deviceId ->
                         FoundDevice(deviceId)
-                    }
+                    }.sortedWith(compareBy { it.id })
                     _devicesListFlow.emit(devicesItemList)
                 }
+            }
+        }
+    }
+
+    private fun collectDeviceInfo() {
+        viewModelScope.launch {
+            scanManager.deviceInformationFlow.collectLatest {
+                _deviceInfoFlow.emit(it)
             }
         }
     }

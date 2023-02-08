@@ -3,14 +3,18 @@ package com.example.wearablesandroidtask.ui.scan
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.wearablesandroidtask.R
 import com.example.wearablesandroidtask.databinding.FragmentScanBinding
+import com.example.wearablesandroidtask.ui.ScanViewModel
 import com.example.wearablesandroidtask.ui.adapters.FoundDevicesAdapter
+import com.example.wearablesandroidtask.ui.details.PARAM_DEVICE_ID
 import com.example.wearablesandroidtask.utils.launchAndRepeatWithViewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -19,20 +23,11 @@ import timber.log.Timber
 @AndroidEntryPoint
 class ScanFragment : Fragment(R.layout.fragment_scan) {
 
-    companion object {
-        fun newInstance() = ScanFragment()
-    }
-
     private val viewBinding: FragmentScanBinding by viewBinding(FragmentScanBinding::bind)
 
-    private lateinit var viewModel: ScanViewModel
+    private val viewModel: ScanViewModel by activityViewModels()
 
     private val devicesAdapter = FoundDevicesAdapter()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this)[ScanViewModel::class.java]
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,8 +51,10 @@ class ScanFragment : Fragment(R.layout.fragment_scan) {
             recyclerView.adapter = devicesAdapter
 
             devicesAdapter.selectedListener = { deviceId ->
-                Timber.d("TAG", "DeviceId $deviceId clicked")
-                viewModel.printDeviceData(deviceId)
+                Timber.d("DeviceId $deviceId clicked")
+
+                val bundle = bundleOf(PARAM_DEVICE_ID to deviceId)
+                Navigation.findNavController(viewBinding.root).navigate(R.id.action_scanFragment_to_detailsFragment, bundle)
                 viewModel.stopSearch()
             }
         }
