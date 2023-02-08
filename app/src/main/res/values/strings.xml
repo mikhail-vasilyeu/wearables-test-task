@@ -6,10 +6,16 @@
 
     <string name="title_please_enable_bt">Please enable Bluetooth</string>
     <string name="button_ok">OK</string>
+    <string name="button_cancel">Cancel</string>
     <string name="button_start">Start</string>
     <string name="button_stop">Stop</string>
     <string name="label_start_search">Press start to search nearby BLE devices</string>
     <string name="label_found_devices">Found %1$s devices</string>
+    <string name="message_title_location_permissions">"Please allow this location permissions"</string>
+    <string name="message_title_bt_permissions">"Please allow this bluetooth permissions"</string>
+    <string name="message_all_granted">"All permissions are granted"</string>
+    <string name="message_this_permissions_denied">"These permissions are denied: %1$s"</string>
+    <string name="message_settings_man">"You need to allow necessary permissions in Settings manually"</string>
 
     <!-- END SCAN SCREEN -->
 

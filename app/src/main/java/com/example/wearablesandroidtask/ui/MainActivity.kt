@@ -55,16 +55,16 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION
             )
             .onExplainRequestReason { scope, deniedList ->
-                scope.showRequestReasonDialog(deniedList, "Core fundamental are based on these permissions", "OK", "Cancel")
+                scope.showRequestReasonDialog(deniedList, getString(R.string.message_title_location_permissions), getString(R.string.button_ok), getString(R.string.button_cancel))
             }
             .onForwardToSettings { scope, deniedList ->
-                scope.showForwardToSettingsDialog(deniedList, "You need to allow necessary permissions in Settings manually", "OK", "Cancel")
+                scope.showForwardToSettingsDialog(deniedList, getString(R.string.message_settings_man), getString(R.string.button_ok), getString(R.string.button_cancel))
             }
-            .request { allGranted, grantedList, deniedList ->
+            .request { allGranted, _, deniedList ->
                 if (allGranted) {
-                    Toast.makeText(this, "All permissions are granted", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.message_all_granted), Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(this, "These permissions are denied: $deniedList", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.message_this_permissions_denied, deniedList), Toast.LENGTH_LONG).show()
                 }
             }
     }
@@ -74,16 +74,16 @@ class MainActivity : AppCompatActivity() {
         PermissionX.init(this)
             .permissions(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)
             .onExplainRequestReason { scope, deniedList ->
-                scope.showRequestReasonDialog(deniedList, "Core fundamental are based on these permissions", "OK", "Cancel")
+                scope.showRequestReasonDialog(deniedList, getString(R.string.message_title_bt_permissions), getString(R.string.button_ok), getString(R.string.button_cancel))
             }
             .onForwardToSettings { scope, deniedList ->
-                scope.showForwardToSettingsDialog(deniedList, "You need to allow necessary permissions in Settings manually", "OK", "Cancel")
+                scope.showForwardToSettingsDialog(deniedList, getString(R.string.message_settings_man), getString(R.string.button_ok), getString(R.string.button_cancel))
             }
-            .request { allGranted, grantedList, deniedList ->
+            .request { allGranted, _, deniedList ->
                 if (allGranted) {
-                    Toast.makeText(this, "All permissions are granted", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.message_all_granted), Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(this, "These permissions are denied: $deniedList", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.message_this_permissions_denied, deniedList), Toast.LENGTH_LONG).show()
                 }
             }
     }
