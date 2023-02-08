@@ -84,6 +84,7 @@ class ScanManagerImpl @Inject constructor(@ApplicationContext context: Context, 
                 }
                 with(GenericAccess) {
                     val deviceInfo = StringBuffer()
+                    deviceInfo.append("Device MAC: $deviceMacAddress\n")
                     deviceConnection.readAppearance()
                     deviceInfo.append("Device appearance: ${deviceConnection.appearance}\n")
                     Timber.d("Device appearance: ${deviceConnection.appearance}")
