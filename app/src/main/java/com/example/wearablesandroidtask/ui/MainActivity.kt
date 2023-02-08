@@ -45,6 +45,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         checkLocationPermission()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            checkBluetoothPermission()
+        }
     }
 
     override fun onResume() {
