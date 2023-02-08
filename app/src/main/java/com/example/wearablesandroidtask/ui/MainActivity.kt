@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         checkLocationPermission()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            checkBluetoothPermission()
+
         }
     }
 
@@ -76,17 +76,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
-    private fun checkBluetoothPermission(){
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-            requestBluetoothScanPermission()
-        }
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-            requestBluetoothConnectPermission()
-        }
-    }
-
-
     private fun checkBackgroundLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestBackgroundLocationPermission()
@@ -95,16 +84,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun requestLocationPermission() {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,), MY_PERMISSIONS_REQUEST_LOCATION)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.S)
-    private fun requestBluetoothScanPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.BLUETOOTH_SCAN,), MY_PERMISSIONS_REQUEST_BT_SCAN)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.S)
-    private fun requestBluetoothConnectPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.BLUETOOTH_CONNECT,), MY_PERMISSIONS_REQUEST_BT_CONNECT)
     }
 
     private fun requestBackgroundLocationPermission() {
@@ -146,33 +125,6 @@ class MainActivity : AppCompatActivity() {
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
                         Toast.makeText(this,getString(R.string.toast_message_location_permission_granted), Toast.LENGTH_LONG).show()
-                    }
-                } else {
-
-                    Toast.makeText(this, getString(R.string.toast_message_permission_denied), Toast.LENGTH_LONG).show()
-                }
-                return
-            }
-            MY_PERMISSIONS_REQUEST_BT_SCAN -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
-
-                        Toast.makeText(this,getString(R.string.toast_message_bt_permission_granted), Toast.LENGTH_LONG).show()
-                    }
-                } else {
-
-                    Toast.makeText(this, getString(R.string.toast_message_permission_denied), Toast.LENGTH_LONG).show()
-                }
-                return
-            }
-
-            MY_PERMISSIONS_REQUEST_BT_CONNECT -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
-
-                        Toast.makeText(this,getString(R.string.toast_message_bt_permission_granted), Toast.LENGTH_LONG).show()
                     }
                 } else {
 
