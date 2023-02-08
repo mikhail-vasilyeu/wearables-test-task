@@ -15,7 +15,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.wearablesandroidtask.R
+import com.permissionx.guolindev.PermissionX
 import dagger.hilt.android.AndroidEntryPoint
+
 
 /*
 
@@ -29,11 +31,6 @@ https://github.com/mikhail-vasilyeu/wearables-test-task
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        private const val MY_PERMISSIONS_REQUEST_LOCATION = 1
-        private const val MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION = 2
-    }
-
 
     private val viewModel: ScanViewModel by viewModels()
 
@@ -42,94 +39,59 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        checkLocationPermission()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            checkLocationPM()
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            checkBlueToothPM()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun checkLocationPM() {
+        PermissionX.init(this)
+            .permissions(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            )
+            .onExplainRequestReason { scope, deniedList ->
+                scope.showRequestReasonDialog(deniedList, "Core fundamental are based on these permissions", "OK", "Cancel")
+            }
+            .onForwardToSettings { scope, deniedList ->
+                scope.showForwardToSettingsDialog(deniedList, "You need to allow necessary permissions in Settings manually", "OK", "Cancel")
+            }
+            .request { allGranted, grantedList, deniedList ->
+                if (allGranted) {
+                    Toast.makeText(this, "All permissions are granted", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, "These permissions are denied: $deniedList", Toast.LENGTH_LONG).show()
+                }
+            }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun checkBlueToothPM() {
+        PermissionX.init(this)
+            .permissions(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)
+            .onExplainRequestReason { scope, deniedList ->
+                scope.showRequestReasonDialog(deniedList, "Core fundamental are based on these permissions", "OK", "Cancel")
+            }
+            .onForwardToSettings { scope, deniedList ->
+                scope.showForwardToSettingsDialog(deniedList, "You need to allow necessary permissions in Settings manually", "OK", "Cancel")
+            }
+            .request { allGranted, grantedList, deniedList ->
+                if (allGranted) {
+                    Toast.makeText(this, "All permissions are granted", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, "These permissions are denied: $deniedList", Toast.LENGTH_LONG).show()
+                }
+            }
     }
 
     override fun onResume() {
         super.onResume()
         if (!viewModel.checkBTEnabled()) {
             Toast.makeText(this, getString(R.string.title_please_enable_bt), Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun checkLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.title_location_permission_request))
-                    .setMessage(getString(R.string.message_location_permission_request))
-                    .setPositiveButton(getString(R.string.button_ok)) { _, _ ->
-                        requestLocationPermission()
-                    }
-                    .create()
-                    .show()
-            } else {
-                requestLocationPermission()
-            }
-        } else {
-            checkBackgroundLocation()
-        }
-    }
-
-    private fun checkBackgroundLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestBackgroundLocationPermission()
-        }
-    }
-
-    private fun requestLocationPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,), MY_PERMISSIONS_REQUEST_LOCATION)
-    }
-
-    private fun requestBackgroundLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
-                MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION
-            )
-        } else {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), MY_PERMISSIONS_REQUEST_LOCATION)
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            MY_PERMISSIONS_REQUEST_LOCATION -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        checkBackgroundLocation()
-                    }
-                } else {
-                    Toast.makeText(this, getString(R.string.toast_message_permission_denied), Toast.LENGTH_LONG).show()
-
-                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        startActivity(
-                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", this.packageName, null),),
-                        )
-                    }
-                }
-                return
-            }
-            MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-                        Toast.makeText(this,getString(R.string.toast_message_location_permission_granted), Toast.LENGTH_LONG).show()
-                    }
-                } else {
-
-                    Toast.makeText(this, getString(R.string.toast_message_permission_denied), Toast.LENGTH_LONG).show()
-                }
-                return
-            }
         }
     }
 }
