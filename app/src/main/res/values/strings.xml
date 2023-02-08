@@ -11,7 +11,8 @@
     <string name="button_start">Start</string>
     <string name="button_stop">Stop</string>
     <string name="toast_message_permission_denied">Permission denied</string>
-    <string name="toast_message_permission_granted">Granted Background Location Permission</string>
+    <string name="toast_message_location_permission_granted">Granted Background Location Permission</string>
+    <string name="toast_message_bt_permission_granted">Granted Bluetooth Permission</string>
     <string name="label_start_search">Press start to search nearby BLE devices</string>
     <string name="label_found_devices">Found %1$s devices</string>
 
