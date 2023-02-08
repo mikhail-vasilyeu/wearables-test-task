@@ -32,8 +32,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val MY_PERMISSIONS_REQUEST_LOCATION = 1
         private const val MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION = 2
-        private const val MY_PERMISSIONS_REQUEST_BT_SCAN = 3
-        private const val MY_PERMISSIONS_REQUEST_BT_CONNECT = 4
     }
 
 
